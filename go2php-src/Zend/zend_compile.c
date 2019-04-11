@@ -1059,10 +1059,11 @@ ZEND_API int do_bind_function(const zend_op_array *op_array, const zend_op *opli
 		old_function = (zend_function*)Z_PTR_P(zv);
 		if (old_function->type == ZEND_USER_FUNCTION
 			&& old_function->op_array.last > 0) {
-			zend_error_noreturn(error_level, "Cannot redeclare %s() (previously declared in %s:%d)",
+			/*zend_error_noreturn(error_level, "Cannot redeclare %s() (previously declared in %s:%d)",
 						ZSTR_VAL(function->common.function_name),
 						ZSTR_VAL(old_function->op_array.filename),
-						old_function->op_array.opcodes[0].lineno);
+						old_function->op_array.opcodes[0].lineno);*/
+			return SUCCESS;
 		} else {
 			zend_error_noreturn(error_level, "Cannot redeclare %s()", ZSTR_VAL(function->common.function_name));
 		}
@@ -1103,7 +1104,7 @@ ZEND_API zend_class_entry *do_bind_class(const zend_op_array* op_array, const ze
 			 * so we shut up about it.  This allows the if (!defined('FOO')) { return; }
 			 * approach to work.
 			 */
-			zend_error_noreturn(E_COMPILE_ERROR, "Cannot declare %s %s, because the name is already in use", zend_get_object_type(ce), ZSTR_VAL(ce->name));
+			//zend_error_noreturn(E_COMPILE_ERROR, "Cannot declare %s %s, because the name is already in use", zend_get_object_type(ce), ZSTR_VAL(ce->name));
 		}
 		return NULL;
 	} else {
@@ -1145,7 +1146,8 @@ ZEND_API zend_class_entry *do_bind_inherited_class(const zend_op_array *op_array
 	ce = (zend_class_entry*)Z_PTR_P(zv);
 
 	if (zend_hash_exists(class_table, Z_STR_P(lcname))) {
-		zend_error_noreturn(E_COMPILE_ERROR, "Cannot declare %s %s, because the name is already in use", zend_get_object_type(ce), ZSTR_VAL(ce->name));
+		//zend_error_noreturn(E_COMPILE_ERROR, "Cannot declare %s %s, because the name is already in use", zend_get_object_type(ce), ZSTR_VAL(ce->name));
+		return NULL;
 	}
 
 	zend_do_inheritance(ce, parent_ce);
@@ -6370,9 +6372,15 @@ void zend_compile_class_decl(zend_ast *ast) /* {{{ */
 				zend_error_noreturn(E_COMPILE_ERROR, "Cannot declare class %s "
 						"because the name is already in use", ZSTR_VAL(name));
 			}
+			else
+			{
+				zend_register_seen_symbol(lcname, ZEND_SYMBOL_CLASS);
+			}
 		}
-
-		zend_register_seen_symbol(lcname, ZEND_SYMBOL_CLASS);
+		else
+		{
+		    zend_register_seen_symbol(lcname, ZEND_SYMBOL_CLASS);
+	    }
 	} else {
 		name = zend_generate_anon_class_name(decl->lex_pos);
 		lcname = zend_string_tolower(name);
