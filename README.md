@@ -37,3 +37,5 @@ $php go2php_server.php
 //test from web browser:
 
 http://127.0.0.1/test.php
+
+//currently, we need to batch replace "$_GET/$_POST/$_COOKIE/$_SESSION" into "_GET()/_POST()/_COOKIE()/_SESSION()" in target normal php projects.
