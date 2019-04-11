@@ -23,6 +23,7 @@ $sudo ln -s /usr/local/php7/bin/php /usr/bin/php
 
 define('DOCROOT', __DIR__.'/www/');
 
+ini_set('display_errors', 'Off');    //avoid errors or warnings to confuse headers
 ini_set('runkit.internal_override', 'on'); 
 runkit_function_redefine('header', '$h', 'echo $h."\r\n\r\n";');
 runkit_function_add('_SERVER', '', '$tmp=Co::getContext()["request"]->server; return $tmp?$tmp:array();');
