@@ -42,4 +42,4 @@ http://127.0.0.1/test.php
 
 //1. we need to batch replace "$_GET/$_POST/$_COOKIE/$_SESSION" into "_GET()/_POST()/_COOKIE()/_SESSION()" in target normal php projects.
 
-//2. when modified php files, the functions and classes in it won't be reloaded
+//2. when modified php files, the functions and classes in them won't be reloaded
