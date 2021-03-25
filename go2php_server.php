@@ -61,6 +61,8 @@ $http->set(['worker_num'=>1,
             'ssl_sni_certs'=>$SITES,
             'ssl_cert_file'=>'domain1.com/ssl/domain.cert.pem', 'ssl_key_file'=>'domain1.com/ssl/private.key.pem'
           ]);
+$port80=$http->listen("0.0.0.0", 80, SWOOLE_SOCK_TCP);
+$port80->on('connect', function ($serv, $fd) {$serv->send($fd, "HTTP/1.1 302 Found\r\nLocation: https://domain1.com/\r\nContent-Length: 0\r\n\r\n");$serv->close($fd);});
 $http->on('request', function ($request, $response) use($SITES)
                      {
                          $request->request_id=\Co::getuid();
@@ -70,7 +72,7 @@ $http->on('request', function ($request, $response) use($SITES)
                          $docroot=@$SITES[$request->header['host']]['docroot'];
                          if (!$docroot)
                          {
-                             $response->end('This domain have not been deployed!');
+                             $response->end('This domain has not been deployed!');
                          }
 
                          ob_start();
