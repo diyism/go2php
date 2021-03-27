@@ -63,4 +63,4 @@ http://127.0.0.1/test.php
 
 //2. must add a line "use function global_functions\session_start..." on top of every php files(if get rid of runkit7)
 
-//3. when modified php files, the functions and classes in them won't be reloaded
+//3. when modified php files, the functions and classes in them won't be reloaded, or modify all functions into variable functions($fun=funciton(){...}) and variable classes($cls=new class() {...})
